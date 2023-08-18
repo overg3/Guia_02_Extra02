@@ -1,4 +1,4 @@
-package guia_02_extra02;
+package mainFrame;
 
 public class Test {
 

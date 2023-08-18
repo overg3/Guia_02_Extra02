@@ -1,6 +1,4 @@
-package guia_02_extra02;
-
-import java.util.Objects;
+package mainFrame;
 
 public class Contacto {
 

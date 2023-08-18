@@ -1,7 +1,9 @@
-package guia_02_extra02;
+package mainFrame.otherFrames;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import mainFrame.Contacto;
 
 public class AgregarGUI extends javax.swing.JDialog {
 
@@ -156,12 +158,21 @@ public class AgregarGUI extends javax.swing.JDialog {
         String contactTel = telField.getText().trim();
         String contactEmail = emailField.getText().trim();
 
-        Contacto newContact = new Contacto(contactName, contactTel, contactEmail);
-        listaContactos.add(newContact);
-        tableModel.addRow(new Object[]{newContact.getNombre(),
-            newContact.getTel(), newContact.getEmail()});
+        if (!nombreField.getText().trim().isEmpty() && !telField.getText().trim().isEmpty()
+                && !emailField.getText().trim().isEmpty()) {
 
-        dispose();
+            Contacto newContact = new Contacto(contactName, contactTel, contactEmail);
+            listaContactos.add(newContact);
+            tableModel.addRow(new Object[]{newContact.getNombre(),
+                newContact.getTel(), newContact.getEmail()});
+            dispose();
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Ingrese todos los datos del contacto",
+                    " Advertencia", JOptionPane.WARNING_MESSAGE);
+            cleanFields();
+        }
+
 
     }//GEN-LAST:event_okButtonActionPerformed
 
@@ -187,4 +198,11 @@ public class AgregarGUI extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     private javax.swing.JTextField telField;
     // End of variables declaration//GEN-END:variables
+
+    private void cleanFields() {
+        nombreField.setText("");
+        telField.setText("");
+        emailField.setText("");
+    }
+
 }

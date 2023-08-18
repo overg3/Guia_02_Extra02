@@ -1,21 +1,45 @@
-package guia_02_extra02;
+package mainFrame;
 
+import java.awt.Color;
+import java.awt.Font;
+import mainFrame.otherFrames.AgregarGUI;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.text.TableView;
+import mainFrame.otherFrames.EditarGUi;
 
 public class AgendaGUi extends javax.swing.JFrame {
 
     private ArrayList<Contacto> listaContactos = new ArrayList<>();
     private DefaultTableModel tableModel;
+    private TableRowSorter<DefaultTableModel> sorter;
     private JFrame rootFrame;
 
     public AgendaGUi() {
         initComponents();
         rootFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         tableModel = (DefaultTableModel) contactosTabla.getModel();
+        sorter = new TableRowSorter<>(tableModel);
+        contactosTabla.setRowSorter(sorter);
+        addButton.requestFocus();
         cargarContactos();
+
+        contactosTabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                if (!lse.getValueIsAdjusting()) {
+                    boolean isSelected = contactosTabla.getSelectedRow() != -1;
+                    editButton.setEnabled(isSelected);
+                    delButton.setEnabled(isSelected);
+
+                }
+            }
+        });
 
     }
 
@@ -42,7 +66,26 @@ public class AgendaGUi extends javax.swing.JFrame {
         setTitle("Mi Agenda");
         setResizable(false);
 
+        searchField.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        searchField.setForeground(java.awt.Color.lightGray);
+        searchField.setText("Ingrese el nombre del contacto");
+        searchField.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchFieldMouseClicked(evt);
+            }
+        });
+        searchField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchFieldActionPerformed(evt);
+            }
+        });
+
         searchButton.setText("Buscar");
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
@@ -71,8 +114,15 @@ public class AgendaGUi extends javax.swing.JFrame {
         });
 
         editButton.setText("Editar Contacto");
+        editButton.setEnabled(false);
+        editButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editButtonActionPerformed(evt);
+            }
+        });
 
         delButton.setText("Eliminar Contacto");
+        delButton.setEnabled(false);
         delButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 delButtonActionPerformed(evt);
@@ -96,6 +146,9 @@ public class AgendaGUi extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(contactosTabla);
+        if (contactosTabla.getColumnModel().getColumnCount() > 0) {
+            contactosTabla.getColumnModel().getColumn(2).setResizable(false);
+        }
 
         javax.swing.GroupLayout buttonsPanelLayout = new javax.swing.GroupLayout(buttonsPanel);
         buttonsPanel.setLayout(buttonsPanelLayout);
@@ -104,8 +157,8 @@ public class AgendaGUi extends javax.swing.JFrame {
             .addGroup(buttonsPanelLayout.createSequentialGroup()
                 .addComponent(addButton)
                 .addGap(18, 18, 18)
-                .addComponent(editButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(delButton))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
@@ -147,7 +200,7 @@ public class AgendaGUi extends javax.swing.JFrame {
 
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
 
-        AgregarGUI agregarWindow = new AgregarGUI(rootFrame, rootPaneCheckingEnabled, listaContactos, tableModel);
+        AgregarGUI agregarWindow = new AgregarGUI(this, rootPaneCheckingEnabled, listaContactos, tableModel);
         agregarWindow.setVisible(true);
 
     }//GEN-LAST:event_addButtonActionPerformed
@@ -155,7 +208,10 @@ public class AgendaGUi extends javax.swing.JFrame {
     private void delButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delButtonActionPerformed
 
         int selectedRow = contactosTabla.getSelectedRow();
-        String selectedContact = (String) tableModel.getValueAt(selectedRow, 0);
+
+        int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
+
+        String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 0);
 
         for (Contacto contacto : listaContactos) {
             if (contacto.getNombre().equals(selectedContact)) {
@@ -164,9 +220,53 @@ public class AgendaGUi extends javax.swing.JFrame {
             }
         }
 
-        tableModel.removeRow(selectedRow);
+        tableModel.removeRow(realSelectedRow);
 
     }//GEN-LAST:event_delButtonActionPerformed
+
+    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+
+        int index = contactosTabla.getSelectedRow();
+
+        String nombre = (String) tableModel.getValueAt(index, 0);
+        String telefono = (String) tableModel.getValueAt(index, 1);
+        String email = (String) tableModel.getValueAt(index, 2);
+
+        EditarGUi editarWindow = new EditarGUi(this, rootPaneCheckingEnabled,
+                nombre, telefono, email, tableModel, index, listaContactos);
+        editarWindow.setVisible(true);
+
+    }//GEN-LAST:event_editButtonActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+
+        String searchText = searchField.getText().trim().toLowerCase();
+
+        limpiarTabla();
+
+        for (Contacto contacto : listaContactos) {
+            if (contacto.getNombre().toLowerCase().startsWith(searchText)) {
+                tableModel.addRow(new Object[]{
+                    contacto.getNombre(), contacto.getTel(), contacto.getTel()
+                });
+            }
+        }
+
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    private void searchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchFieldMouseClicked
+
+        searchField.setText("");
+        searchField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        searchField.setForeground(Color.BLACK);
+
+    }//GEN-LAST:event_searchFieldMouseClicked
+
+    private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
+        
+        searchButtonActionPerformed(evt);
+        
+    }//GEN-LAST:event_searchFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -197,6 +297,14 @@ public class AgendaGUi extends javax.swing.JFrame {
         }
 
         contactosTabla.setModel(tableModel);
+
+    }
+
+    private void limpiarTabla() {
+        int filas = contactosTabla.getRowCount() - 1;
+        for (int i = filas; i >= 0; i--) {
+            tableModel.removeRow(i);
+        }
 
     }
 
