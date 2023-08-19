@@ -1,5 +1,7 @@
 package mainFrame.otherFrames;
 
+import java.awt.Color;
+import java.awt.Font;
 import mainFrame.AgendaGUi;
 
 public class AdvSearchGUI extends javax.swing.JDialog {
@@ -58,11 +60,44 @@ public class AdvSearchGUI extends javax.swing.JDialog {
 
         jLabel1.setText("Nombre:");
 
+        nameField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                nameFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nameFieldFocusLost(evt);
+            }
+        });
+
         jLabel2.setText("Teléfono:");
+
+        telField.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        telField.setForeground(java.awt.Color.lightGray);
+        telField.setText("Ingrese un número de tel");
+        telField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                telFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                telFieldFocusLost(evt);
+            }
+        });
 
         jLabel3.setText("Email:");
 
-        favCheck.setText("Favorito");
+        mailField.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        mailField.setForeground(java.awt.Color.lightGray);
+        mailField.setText("Ingrese un email");
+        mailField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                mailFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                mailFieldFocusLost(evt);
+            }
+        });
+
+        favCheck.setText("Buscar solo favoritos");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -129,9 +164,9 @@ public class AdvSearchGUI extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cancelButton)
-                .addGap(18, 18, 18)
                 .addComponent(okButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cancelButton)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -154,7 +189,7 @@ public class AdvSearchGUI extends javax.swing.JDialog {
                         .addContainerGap()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
+                        .addGap(80, 80, 80)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -178,15 +213,80 @@ public class AdvSearchGUI extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 
+        verificarFields();
+
         String name = nameField.getText().trim().toLowerCase();
         String tel = telField.getText().trim().toLowerCase();
         String mail = mailField.getText().trim().toLowerCase();
-        boolean favState = favCheck.isSelected();
+        boolean onlyFavs = favCheck.isSelected();
 
-        rootFrame.busquedaAvanzada(name, tel, mail, favState);
+        rootFrame.busquedaAvanzada(name, tel, mail, onlyFavs);
 
         dispose();
     }//GEN-LAST:event_okButtonActionPerformed
+
+    private void nameFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFieldFocusGained
+
+        if (!nameField.getText().isEmpty()
+                && nameField.getForeground().equals(Color.LIGHT_GRAY)) {
+            nameField.setText("");
+            nameField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            nameField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_nameFieldFocusGained
+
+    private void nameFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameFieldFocusLost
+
+        if (nameField.getText().isEmpty()) {
+            nameField.setFont(new Font("Tahoma", Font.ITALIC, 11));
+            nameField.setForeground(Color.LIGHT_GRAY);
+            nameField.setText("Ingrese un nombre");
+        }
+
+    }//GEN-LAST:event_nameFieldFocusLost
+
+    private void telFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_telFieldFocusGained
+
+        if (!telField.getText().isEmpty()
+                && telField.getForeground().equals(Color.LIGHT_GRAY)) {
+            telField.setText("");
+            telField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            telField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_telFieldFocusGained
+
+    private void telFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_telFieldFocusLost
+
+        if (telField.getText().isEmpty()) {
+            telField.setFont(new Font("Tahoma", Font.ITALIC, 11));
+            telField.setForeground(Color.LIGHT_GRAY);
+            telField.setText("Ingrese un número de tel");
+        }
+
+    }//GEN-LAST:event_telFieldFocusLost
+
+    private void mailFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mailFieldFocusGained
+
+        if (!mailField.getText().isEmpty()
+                && mailField.getForeground().equals(Color.LIGHT_GRAY)) {
+            mailField.setText("");
+            mailField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            mailField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_mailFieldFocusGained
+
+    private void mailFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_mailFieldFocusLost
+
+        if (mailField.getText().isEmpty()) {
+            mailField.setFont(new Font("Tahoma", Font.ITALIC, 11));
+            mailField.setForeground(Color.LIGHT_GRAY);
+            mailField.setText("Ingrese un email");
+        }
+
+    }//GEN-LAST:event_mailFieldFocusLost
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -202,4 +302,18 @@ public class AdvSearchGUI extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     private javax.swing.JTextField telField;
     // End of variables declaration//GEN-END:variables
+
+    private void verificarFields() {
+
+        if (nameField.getForeground().equals(Color.LIGHT_GRAY)) {
+            nameField.setText("");
+        }
+        if (mailField.getForeground().equals(Color.LIGHT_GRAY)) {
+            mailField.setText("");
+        }
+        if (telField.getForeground().equals(Color.LIGHT_GRAY)) {
+            telField.setText("");
+        }
+    }
+
 }

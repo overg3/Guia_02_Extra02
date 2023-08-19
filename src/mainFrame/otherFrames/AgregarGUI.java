@@ -1,5 +1,7 @@
 package mainFrame.otherFrames;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -10,7 +12,7 @@ public class AgregarGUI extends javax.swing.JDialog {
     private ArrayList<Contacto> listaContactos;
     private DefaultTableModel tableModel;
 
-    public AgregarGUI(java.awt.Frame parent, boolean modal, 
+    public AgregarGUI(java.awt.Frame parent, boolean modal,
             ArrayList<Contacto> listaContactos, DefaultTableModel tableModel) {
         super(parent, modal);
         this.listaContactos = listaContactos;
@@ -53,10 +55,10 @@ public class AgregarGUI extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         nombreField = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         telField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
         emailField = new javax.swing.JTextField();
         favCheck = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
@@ -69,9 +71,57 @@ public class AgregarGUI extends javax.swing.JDialog {
 
         jLabel1.setText("Nombre:");
 
+        nombreField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                nombreFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nombreFieldFocusLost(evt);
+            }
+        });
+        nombreField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nombreFieldActionPerformed(evt);
+            }
+        });
+
         jLabel2.setText("Teléfono:");
 
+        telField.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        telField.setForeground(java.awt.Color.lightGray);
+        telField.setText("Ingrese un número de tel");
+        telField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                telFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                telFieldFocusLost(evt);
+            }
+        });
+        telField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                telFieldActionPerformed(evt);
+            }
+        });
+
         jLabel3.setText("Email:");
+
+        emailField.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        emailField.setForeground(java.awt.Color.lightGray);
+        emailField.setText("Ingrese un email");
+        emailField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                emailFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                emailFieldFocusLost(evt);
+            }
+        });
+        emailField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emailFieldActionPerformed(evt);
+            }
+        });
 
         favCheck.setText("Favorito");
 
@@ -163,6 +213,8 @@ public class AgregarGUI extends javax.swing.JDialog {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
 
+        verificarFields();
+
         String contactName = nombreField.getText().trim();
         String contactTel = telField.getText().trim();
         String contactEmail = emailField.getText().trim();
@@ -180,12 +232,14 @@ public class AgregarGUI extends javax.swing.JDialog {
                 tableModel.addRow(new Object[]{"", newContact.getNombre(),
                     newContact.getTel(), newContact.getEmail()});
             }
-
             dispose();
-            cleanFields();
+
         } else {
             JOptionPane.showMessageDialog(this, "Ingrese el nombre del contacto",
                     " Advertencia", JOptionPane.WARNING_MESSAGE);
+            nombreField.requestFocus();
+            nombreField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            nombreField.setForeground(Color.BLACK);
         }
 
 
@@ -196,6 +250,86 @@ public class AgregarGUI extends javax.swing.JDialog {
         dispose();
 
     }//GEN-LAST:event_cancelButtonActionPerformed
+
+    private void emailFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFieldFocusLost
+
+        if (emailField.getText().isEmpty()) {
+            emailField.setFont(new Font("Tahoma", Font.ITALIC, 11));
+            emailField.setForeground(Color.LIGHT_GRAY);
+            emailField.setText("Ingrese un email");
+        }
+    }//GEN-LAST:event_emailFieldFocusLost
+
+    private void telFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_telFieldFocusLost
+
+        if (telField.getText().isEmpty()) {
+            telField.setFont(new Font("Tahoma", Font.ITALIC, 11));
+            telField.setForeground(Color.LIGHT_GRAY);
+            telField.setText("Ingrese un número de tel");
+        }
+
+    }//GEN-LAST:event_telFieldFocusLost
+
+    private void nombreFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nombreFieldFocusLost
+
+        if (nombreField.getText().isEmpty()) {
+            nombreField.setFont(new Font("Tahoma", Font.ITALIC, 11));
+            nombreField.setForeground(Color.LIGHT_GRAY);
+            nombreField.setText("Ingrese un nombre");
+        }
+
+    }//GEN-LAST:event_nombreFieldFocusLost
+
+    private void emailFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFieldFocusGained
+
+        if (!emailField.getText().isEmpty()
+                && emailField.getForeground().equals(Color.LIGHT_GRAY)) {
+            emailField.setText("");
+            emailField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            emailField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_emailFieldFocusGained
+
+    private void telFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_telFieldFocusGained
+
+        if (!telField.getText().isEmpty()
+                && telField.getForeground().equals(Color.LIGHT_GRAY)) {
+            telField.setText("");
+            telField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            telField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_telFieldFocusGained
+
+    private void nombreFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nombreFieldFocusGained
+
+        if (!nombreField.getText().isEmpty()
+                && nombreField.getForeground().equals(Color.LIGHT_GRAY)) {
+            nombreField.setText("");
+            nombreField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            nombreField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_nombreFieldFocusGained
+
+    private void nombreFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nombreFieldActionPerformed
+
+        okButtonActionPerformed(evt);
+
+    }//GEN-LAST:event_nombreFieldActionPerformed
+
+    private void emailFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailFieldActionPerformed
+
+        okButtonActionPerformed(evt);
+
+    }//GEN-LAST:event_emailFieldActionPerformed
+
+    private void telFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_telFieldActionPerformed
+
+        okButtonActionPerformed(evt);
+
+    }//GEN-LAST:event_telFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
@@ -215,6 +349,19 @@ public class AgregarGUI extends javax.swing.JDialog {
         nombreField.setText("");
         telField.setText("");
         emailField.setText("");
+    }
+
+    private void verificarFields() {
+
+        if (nombreField.getForeground().equals(Color.LIGHT_GRAY)) {
+            nombreField.setText("");
+        }
+        if (emailField.getForeground().equals(Color.LIGHT_GRAY)) {
+            emailField.setText("");
+        }
+        if (telField.getForeground().equals(Color.LIGHT_GRAY)) {
+            telField.setText("");
+        }
     }
 
 }

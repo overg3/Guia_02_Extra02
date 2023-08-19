@@ -21,6 +21,7 @@ public class AgendaGUi extends javax.swing.JFrame {
     private JFrame rootFrame;
 
     public AgendaGUi() {
+
         initComponents();
         rootFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         tableModel = (DefaultTableModel) contactosTabla.getModel();
@@ -29,7 +30,8 @@ public class AgendaGUi extends javax.swing.JFrame {
         addButton.requestFocus();
         cargarContactos();
 
-        contactosTabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        contactosTabla.getSelectionModel().addListSelectionListener(
+                new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting()) {
@@ -68,13 +70,11 @@ public class AgendaGUi extends javax.swing.JFrame {
         searchField.setForeground(java.awt.Color.lightGray);
         searchField.setText("Ingrese el nombre del contacto");
         searchField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                searchFieldFocusGained(evt);
+            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 searchFieldFocusLost(evt);
-            }
-        });
-        searchField.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                searchFieldMouseClicked(evt);
             }
         });
         searchField.addActionListener(new java.awt.event.ActionListener() {
@@ -137,6 +137,7 @@ public class AgendaGUi extends javax.swing.JFrame {
             }
         });
 
+        delButton.setBackground(new java.awt.Color(211, 132, 132));
         delButton.setText("Eliminar Contacto");
         delButton.setEnabled(false);
         delButton.addActionListener(new java.awt.event.ActionListener() {
@@ -170,8 +171,9 @@ public class AgendaGUi extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(contactosTabla);
         if (contactosTabla.getColumnModel().getColumnCount() > 0) {
-            contactosTabla.getColumnModel().getColumn(0).setResizable(false);
-            contactosTabla.getColumnModel().getColumn(0).setPreferredWidth(5);
+            contactosTabla.getColumnModel().getColumn(0).setMinWidth(30);
+            contactosTabla.getColumnModel().getColumn(0).setPreferredWidth(30);
+            contactosTabla.getColumnModel().getColumn(0).setMaxWidth(40);
         }
 
         filterCombo.setBackground(new java.awt.Color(51, 255, 255));
@@ -256,7 +258,7 @@ public class AgendaGUi extends javax.swing.JFrame {
 
         int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
 
-        String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 0);
+        String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 1);
 
         for (Contacto contacto : listaContactos) {
             if (contacto.getNombre().equals(selectedContact)) {
@@ -277,7 +279,7 @@ public class AgendaGUi extends javax.swing.JFrame {
         String telefono = (String) tableModel.getValueAt(index, 2);
         String email = (String) tableModel.getValueAt(index, 3);
         Contacto contacto = null;
-        
+
         for (Contacto contactFound : listaContactos) {
             if (contactFound.getNombre().equals(nombre)) {
                 contacto = contactFound;
@@ -297,23 +299,22 @@ public class AgendaGUi extends javax.swing.JFrame {
         limpiarTabla();
 
         for (Contacto contacto : listaContactos) {
-            if (contacto.getNombre().toLowerCase().startsWith(searchText)) {
+            if (contacto.getNombre().toLowerCase().startsWith(searchText)
+                    && !contacto.isFav()) {
                 tableModel.addRow(new Object[]{
                     "", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
                 });
+
+            } else if (contacto.getNombre().toLowerCase().startsWith(searchText)
+                    && contacto.isFav()) {
+                tableModel.addRow(new Object[]{
+                    "★", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                });
             }
+
         }
 
     }//GEN-LAST:event_searchButtonActionPerformed
-
-    private void searchFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchFieldMouseClicked
-
-        searchField.setText("");
-        searchField.setFont(new Font("Tahoma", Font.PLAIN, 11));
-        searchField.setForeground(Color.BLACK);
-
-
-    }//GEN-LAST:event_searchFieldMouseClicked
 
     private void searchFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchFieldActionPerformed
 
@@ -346,6 +347,17 @@ public class AgendaGUi extends javax.swing.JFrame {
             filterFavs();
         }
     }//GEN-LAST:event_filterComboItemStateChanged
+
+    private void searchFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_searchFieldFocusGained
+
+        if (!searchField.getText().isEmpty()
+                && searchField.getForeground().equals(Color.LIGHT_GRAY)) {
+            searchField.setText("");
+            searchField.setFont(new Font("Tahoma", Font.PLAIN, 11));
+            searchField.setForeground(Color.BLACK);
+        }
+
+    }//GEN-LAST:event_searchFieldFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -396,8 +408,8 @@ public class AgendaGUi extends javax.swing.JFrame {
 
     }
 
-    public void busquedaAvanzada(String nombre, String tel,
-            String mail, boolean fav) {
+    public void busquedaAvanzada(String nombre, String tel, String mail,
+            boolean onlyFavs) {
 
         limpiarTabla();
 
@@ -412,10 +424,25 @@ public class AgendaGUi extends javax.swing.JFrame {
             emailContacto = contacto.getEmail().toLowerCase();
 
             if (nombreContacto.startsWith(nombre) && telContacto.startsWith(tel)
-                    && emailContacto.startsWith(mail) && contacto.isFav() == fav) {
+                    && emailContacto.startsWith(mail) && onlyFavs == false) {
 
+                if (contacto.isFav()) {
+                    tableModel.addRow(new Object[]{
+                        "★", contacto.getNombre(), contacto.getTel(),
+                        contacto.getEmail()
+                    });
+                } else {
+                    tableModel.addRow(new Object[]{
+                        "", contacto.getNombre(), contacto.getTel(),
+                        contacto.getEmail()
+                    });
+                }
+
+            } else if (nombreContacto.startsWith(nombre) && telContacto.startsWith(tel)
+                    && emailContacto.startsWith(mail) && contacto.isFav() == true
+                    && onlyFavs == true) {
                 tableModel.addRow(new Object[]{
-                    "", contacto.getNombre(), contacto.getTel(),
+                    "★", contacto.getNombre(), contacto.getTel(),
                     contacto.getEmail()
                 });
             }
@@ -426,9 +453,16 @@ public class AgendaGUi extends javax.swing.JFrame {
         limpiarTabla();
 
         for (Contacto contacto : listaContactos) {
-            tableModel.addRow(new Object[]{
-                "", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
-            });
+            if (contacto.isFav()) {
+                tableModel.addRow(new Object[]{
+                    "★", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                });
+            } else {
+                tableModel.addRow(new Object[]{
+                    "", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                });
+            }
+
         }
     }
 
@@ -438,7 +472,7 @@ public class AgendaGUi extends javax.swing.JFrame {
         for (Contacto contacto : listaContactos) {
             if (contacto.isFav()) {
                 tableModel.addRow(new Object[]{
-                    "", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                    "★", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
                 });
             }
         }
