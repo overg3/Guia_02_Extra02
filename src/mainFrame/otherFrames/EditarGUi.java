@@ -8,6 +8,7 @@ import mainFrame.Contacto;
 public class EditarGUi extends javax.swing.JDialog {
 
     private ArrayList<Contacto> listaContactos;
+    private Contacto contacto;
     private DefaultTableModel tableModel;
     private String nombre;
     private String oldName;
@@ -17,7 +18,7 @@ public class EditarGUi extends javax.swing.JDialog {
 
     public EditarGUi(java.awt.Frame parent, boolean modal, String nombre,
             String telefono, String email, DefaultTableModel tableModel,
-            int tableIndex, ArrayList<Contacto> listaContactos) {
+            int tableIndex, ArrayList<Contacto> listaContactos, Contacto contacto) {
         super(parent, modal);
         this.tableModel = tableModel;
         this.tableindex = tableIndex;
@@ -26,6 +27,7 @@ public class EditarGUi extends javax.swing.JDialog {
         this.oldName = nombre;
         this.telefono = telefono;
         this.email = email;
+        this.contacto = contacto;
 
         initComponents();
 
@@ -55,6 +57,7 @@ public class EditarGUi extends javax.swing.JDialog {
         nameField.setText(nombre);
         telField.setText(telefono);
         mailField.setText(email);
+        favCheck.setSelected(contacto.isFav());
     }
 
     @SuppressWarnings("unchecked")
@@ -68,6 +71,7 @@ public class EditarGUi extends javax.swing.JDialog {
         telField = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         mailField = new javax.swing.JTextField();
+        favCheck = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
@@ -82,6 +86,8 @@ public class EditarGUi extends javax.swing.JDialog {
 
         jLabel3.setText("Email:");
 
+        favCheck.setText("Favorito");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -90,19 +96,19 @@ public class EditarGUi extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(30, 30, 30)
-                        .addComponent(nameField))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2))
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(telField)
-                            .addComponent(mailField, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(jLabel1)
+                            .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(mailField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(telField, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(favCheck))
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -110,19 +116,21 @@ public class EditarGUi extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(telField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                    .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(mailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(telField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(favCheck))
+                .addGap(17, 17, 17))
         );
 
-        okButton.setText("Aceptar");
+        okButton.setText("Editar");
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okButtonActionPerformed(evt);
@@ -142,7 +150,7 @@ public class EditarGUi extends javax.swing.JDialog {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(okButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                 .addComponent(cancelButton))
         );
         jPanel2Layout.setVerticalGroup(
@@ -157,22 +165,23 @@ public class EditarGUi extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(100, 100, 100)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(20, 20, 20)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -185,25 +194,30 @@ public class EditarGUi extends javax.swing.JDialog {
         String newTel = telField.getText().trim();
         String newEmail = mailField.getText().trim();
 
-        if (!nameField.getText().trim().isEmpty() && !telField.getText().trim().isEmpty()
-                && !mailField.getText().trim().isEmpty()) {
-            for (Contacto contacto : listaContactos) {
-                if (contacto.getNombre().equals(oldName)) {
-                    contacto.setNombre(newName);
-                    contacto.setTel(newTel);
-                    contacto.setEmail(newEmail);
+        if (!nameField.getText().trim().isEmpty()) {
+            for (Contacto contactoFound : listaContactos) {
+                if (contactoFound.getNombre().equals(oldName)) {
+                    contactoFound.setNombre(newName);
+                    contactoFound.setTel(newTel);
+                    contactoFound.setEmail(newEmail);
+                    contactoFound.setFav(favCheck.isSelected());
                     break;
                 }
             }
 
-            tableModel.setValueAt(newName, tableindex, 0);
-            tableModel.setValueAt(newTel, tableindex, 1);
-            tableModel.setValueAt(newEmail, tableindex, 2);
+            if (favCheck.isSelected()) {
+                tableModel.setValueAt("★", tableindex, 0);
+            } else {
+                tableModel.setValueAt("", tableindex, 0);
+            }
+            tableModel.setValueAt(newName, tableindex, 1);
+            tableModel.setValueAt(newTel, tableindex, 2);
+            tableModel.setValueAt(newEmail, tableindex, 3);
 
             dispose();
 
         } else {
-            JOptionPane.showMessageDialog(this, "Ingrese todos los datos del contacto",
+            JOptionPane.showMessageDialog(this, "Ingrese el nombre del contacto",
                     " Advertencia", JOptionPane.WARNING_MESSAGE);
         }
 
@@ -215,12 +229,9 @@ public class EditarGUi extends javax.swing.JDialog {
 
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
+    private javax.swing.JCheckBox favCheck;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
