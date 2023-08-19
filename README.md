@@ -1,4 +1,6 @@
-# Ejercicio Extra #2
+# Ejercicio Extra #2 
+## ![sample](https://github.com/overg3/Guia_02_Extra02/blob/main/src/samplePic.jpg?raw=true)
+
 Desarrolla una aplicación de gestión de contactos utilizando interfaces gráficas y colecciones en
 Java. La interfaz gráfica debe permitir al usuario agregar nuevos contactos, buscar contactos
 existentes, editar la información de un contacto y eliminar contactos de la lista. Cada contacto
