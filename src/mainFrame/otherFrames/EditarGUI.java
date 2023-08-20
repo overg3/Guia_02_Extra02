@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import mainFrame.Contacto;
 
-public class EditarGUi extends javax.swing.JDialog {
+public class EditarGUI extends javax.swing.JDialog {
 
     private ArrayList<Contacto> listaContactos;
     private Contacto contacto;
@@ -16,7 +16,7 @@ public class EditarGUi extends javax.swing.JDialog {
     private String email;
     private int tableindex;
 
-    public EditarGUi(java.awt.Frame parent, boolean modal, String nombre,
+    public EditarGUI(java.awt.Frame parent, boolean modal, String nombre,
             String telefono, String email, DefaultTableModel tableModel,
             int tableIndex, ArrayList<Contacto> listaContactos, Contacto contacto) {
         super(parent, modal);
@@ -44,14 +44,15 @@ public class EditarGUi extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditarGUi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditarGUi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditarGUi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditarGUi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         nameField.setText(nombre);
@@ -242,11 +243,5 @@ public class EditarGUi extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     private javax.swing.JTextField telField;
     // End of variables declaration//GEN-END:variables
-
-    private void cleanFields() {
-        nameField.setText("");
-        telField.setText("");
-        mailField.setText("");
-    }
 
 }

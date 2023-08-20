@@ -3,8 +3,11 @@ package mainFrame;
 public class Contacto {
 
     private String nombre;
+    private String apellido;
     private String tel;
     private String email;
+    private String direccion;
+    private String web;
     private boolean fav;
 
     public Contacto(String nombre, String tel, String email) {
@@ -36,6 +39,30 @@ public class Contacto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
+    public void setWeb(String web) {
+        this.web = web;
     }
 
     public boolean isFav() {

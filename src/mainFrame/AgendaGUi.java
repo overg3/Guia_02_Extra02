@@ -11,7 +11,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import mainFrame.otherFrames.AdvSearchGUI;
-import mainFrame.otherFrames.EditarGUi;
+import mainFrame.otherFrames.DetalleGUI;
+import mainFrame.otherFrames.EditarGUI;
 
 public class AgendaGUi extends javax.swing.JFrame {
 
@@ -169,6 +170,11 @@ public class AgendaGUi extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        contactosTabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                contactosTablaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(contactosTabla);
         if (contactosTabla.getColumnModel().getColumnCount() > 0) {
             contactosTabla.getColumnModel().getColumn(0).setMinWidth(30);
@@ -286,7 +292,7 @@ public class AgendaGUi extends javax.swing.JFrame {
             }
         }
 
-        EditarGUi editarWindow = new EditarGUi(this, rootPaneCheckingEnabled,
+        EditarGUI editarWindow = new EditarGUI(this, rootPaneCheckingEnabled,
                 nombre, telefono, email, tableModel, index, listaContactos, contacto);
         editarWindow.setVisible(true);
 
@@ -358,6 +364,23 @@ public class AgendaGUi extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_searchFieldFocusGained
+
+    private void contactosTablaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactosTablaMouseClicked
+
+        int fila;
+        int columna;
+
+        if (evt.getClickCount() == 2) {
+            fila = contactosTabla.rowAtPoint(evt.getPoint());
+            columna = contactosTabla.columnAtPoint(evt.getPoint());
+
+            if (fila >= 0 && columna >= 0) {
+                DetalleGUI contactoWindow = new DetalleGUI(this, true, contactoSeleccionado());
+                contactoWindow.setVisible(true);
+            }
+        }
+
+    }//GEN-LAST:event_contactosTablaMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -476,6 +499,21 @@ public class AgendaGUi extends javax.swing.JFrame {
                 });
             }
         }
+    }
+
+    private Contacto contactoSeleccionado() {
+
+        int selectedRow = contactosTabla.getSelectedRow();
+        int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
+
+        String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 1);
+
+        for (Contacto contacto : listaContactos) {
+            if (contacto.getNombre().equals(selectedContact)) {
+                return contacto;
+            }
+        }
+        return null;
     }
 
 }
