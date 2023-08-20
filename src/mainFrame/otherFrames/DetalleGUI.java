@@ -1,6 +1,7 @@
 package mainFrame.otherFrames;
 
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mainFrame.Contacto;
@@ -49,10 +50,15 @@ public class DetalleGUI extends javax.swing.JDialog {
         nameField.setText(contacto.getNombre());
         telField.setText(contacto.getTel());
         mailField.setText(contacto.getEmail());
+        adressField.setText(contacto.getDireccion());
+        webField.setText(contacto.getWeb());
+        lastnField.setText(contacto.getApellido());
         if (contacto.isFav()) {
             groupCombo.setSelectedIndex(1);
+            favLabel.setText("★");
         } else {
             groupCombo.setSelectedIndex(0);
+            favLabel.setText("");
         }
 
     }
@@ -77,8 +83,11 @@ public class DetalleGUI extends javax.swing.JDialog {
         webField = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         closeButton = new javax.swing.JButton();
+        applyButton = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
+        editToggle = new javax.swing.JToggleButton();
+        favLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle(" Información del contacto");
@@ -106,11 +115,7 @@ public class DetalleGUI extends javax.swing.JDialog {
 
         groupCombo.setBackground(new java.awt.Color(51, 255, 255));
         groupCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Favorito" }));
-        groupCombo.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                groupComboItemStateChanged(evt);
-            }
-        });
+        groupCombo.setEnabled(false);
 
         jLabel9.setText("Grupo:");
 
@@ -125,6 +130,14 @@ public class DetalleGUI extends javax.swing.JDialog {
             }
         });
 
+        applyButton.setText("Aplicar Cambios");
+        applyButton.setEnabled(false);
+        applyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -136,21 +149,23 @@ public class DetalleGUI extends javax.swing.JDialog {
                         .addComponent(jLabel7)
                         .addComponent(nameField)
                         .addComponent(jLabel8)
-                        .addComponent(lastnField)
-                        .addComponent(groupCombo, 0, 125, Short.MAX_VALUE))
+                        .addComponent(groupCombo, 0, 125, Short.MAX_VALUE)
+                        .addComponent(lastnField))
                     .addComponent(jLabel9)
                     .addComponent(jLabel6)
                     .addComponent(adressField, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel5)
-                    .addComponent(mailField, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                    .addComponent(jLabel3)
-                    .addComponent(telField)
-                    .addComponent(jLabel10)
-                    .addComponent(webField)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel5)
+                        .addComponent(mailField, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                        .addComponent(jLabel3)
+                        .addComponent(telField)
+                        .addComponent(jLabel10)
+                        .addComponent(webField))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(applyButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(closeButton)))
                 .addContainerGap())
         );
@@ -192,7 +207,8 @@ public class DetalleGUI extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(groupCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(closeButton))
+                    .addComponent(closeButton)
+                    .addComponent(applyButton))
                 .addGap(8, 8, 8))
         );
 
@@ -210,6 +226,16 @@ public class DetalleGUI extends javax.swing.JDialog {
             .addGap(0, 86, Short.MAX_VALUE)
         );
 
+        editToggle.setText("Editar...");
+        editToggle.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                editToggleStateChanged(evt);
+            }
+        });
+
+        favLabel.setForeground(new java.awt.Color(0, 153, 0));
+        favLabel.setText("★");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -217,13 +243,28 @@ public class DetalleGUI extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(editToggle)
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(favLabel)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(editToggle))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(favLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -234,8 +275,8 @@ public class DetalleGUI extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -245,7 +286,7 @@ public class DetalleGUI extends javax.swing.JDialog {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         pack();
@@ -254,28 +295,60 @@ public class DetalleGUI extends javax.swing.JDialog {
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
 
+        if (applyButton.isEnabled()) {
+
+            int respuesta = JOptionPane.showConfirmDialog(this,
+                    "¿Desea descartar los cambios?", " Cambios sin aplicar",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+            if (respuesta == JOptionPane.CANCEL_OPTION) {
+                return;
+            }
+        }
+
         dispose();
 
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void groupComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_groupComboItemStateChanged
+    private void editToggleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_editToggleStateChanged
+
+        toggleEdicion();
+        nameField.requestFocus();
+
+    }//GEN-LAST:event_editToggleStateChanged
+
+    private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
 
         boolean favChoice;
+        String nombre = nameField.getText();
+        String apellido = lastnField.getText();
+        String direccion = adressField.getText();
+        String telefono = telField.getText();
+        String email = mailField.getText();
+        String web = webField.getText();
 
         if (groupCombo.getSelectedIndex() == 0) {
             contacto.setFav(false);
+            favLabel.setText("");
             favChoice = false;
         } else {
             contacto.setFav(true);
+            favLabel.setText("★");
             favChoice = true;
         }
-        aplicarCambios(favChoice);
 
-    }//GEN-LAST:event_groupComboItemStateChanged
+        aplicarCambios(nombre, apellido, direccion, telefono, email, web, favChoice);
+
+        editToggle.setSelected(false);
+
+    }//GEN-LAST:event_applyButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField adressField;
+    private javax.swing.JButton applyButton;
     private javax.swing.JButton closeButton;
+    private javax.swing.JToggleButton editToggle;
+    private javax.swing.JLabel favLabel;
     private javax.swing.JComboBox<String> groupCombo;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel3;
@@ -294,21 +367,49 @@ public class DetalleGUI extends javax.swing.JDialog {
     private javax.swing.JTextField webField;
     // End of variables declaration//GEN-END:variables
 
-    private void aplicarCambios(boolean favChoice) {
+    private void aplicarCambios(String nombre, String apellido, String direccion,
+            String telefono, String email, String web, boolean favChoice) {
 
         int selectedRow = tablaContactos.getSelectedRow();
         int realSelectedRow = tablaContactos.convertRowIndexToModel(selectedRow);
 
+        // Modificar Lista de contactos
         for (Contacto contactoFound : listaContactos) {
             if (contactoFound.getNombre().equals(contacto.getNombre())) {
+
+                contactoFound.setNombre(nombre);
+                contactoFound.setApellido(apellido);
+                contactoFound.setDireccion(direccion);
+                contactoFound.setTel(telefono);
+                contactoFound.setEmail(email);
+                contactoFound.setWeb(web);
                 contactoFound.setFav(favChoice);
             }
         }
+
+        // Modificar Tabla de contactos
         if (favChoice == true) {
             tablaModel.setValueAt("★", realSelectedRow, 0);
         } else {
             tablaModel.setValueAt("", realSelectedRow, 0);
         }
+        tablaModel.setValueAt(nombre, realSelectedRow, 1);
+        tablaModel.setValueAt(telefono, realSelectedRow, 2);
+        tablaModel.setValueAt(email, realSelectedRow, 3);
+
+    }
+
+    private void toggleEdicion() {
+
+        applyButton.setEnabled(editToggle.isSelected());
+        groupCombo.setEnabled(editToggle.isSelected());
+        nameField.setEditable(editToggle.isSelected());
+        lastnField.setEditable(editToggle.isSelected());
+        adressField.setEditable(editToggle.isSelected());
+        telField.setEditable(editToggle.isSelected());
+        mailField.setEditable(editToggle.isSelected());
+        webField.setEditable(editToggle.isSelected());
+
     }
 
 }

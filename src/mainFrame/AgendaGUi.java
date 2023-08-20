@@ -12,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import mainFrame.otherFrames.AdvSearchGUI;
 import mainFrame.otherFrames.DetalleGUI;
-import mainFrame.otherFrames.EditarGUI;
 
 public class AgendaGUi extends javax.swing.JFrame {
 
@@ -39,6 +38,7 @@ public class AgendaGUi extends javax.swing.JFrame {
                     boolean isSelected = contactosTabla.getSelectedRow() != -1;
                     editButton.setEnabled(isSelected);
                     delButton.setEnabled(isSelected);
+                    favButton.setEnabled(isSelected);
 
                 }
             }
@@ -62,6 +62,7 @@ public class AgendaGUi extends javax.swing.JFrame {
         contactosTabla = new javax.swing.JTable();
         filterCombo = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
+        favButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mi Agenda");
@@ -130,7 +131,7 @@ public class AgendaGUi extends javax.swing.JFrame {
             }
         });
 
-        editButton.setText("Editar Contacto");
+        editButton.setText("Ver Contacto");
         editButton.setEnabled(false);
         editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -182,7 +183,6 @@ public class AgendaGUi extends javax.swing.JFrame {
             contactosTabla.getColumnModel().getColumn(0).setMaxWidth(40);
         }
 
-        filterCombo.setBackground(new java.awt.Color(51, 255, 255));
         filterCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ver Todos", "Ver Favoritos" }));
         filterCombo.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -192,6 +192,16 @@ public class AgendaGUi extends javax.swing.JFrame {
 
         jLabel1.setText("Filtrar por:");
 
+        favButton.setBackground(new java.awt.Color(204, 255, 153));
+        favButton.setForeground(new java.awt.Color(0, 102, 0));
+        favButton.setText("★");
+        favButton.setEnabled(false);
+        favButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                favButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout buttonsPanelLayout = new javax.swing.GroupLayout(buttonsPanel);
         buttonsPanel.setLayout(buttonsPanelLayout);
         buttonsPanelLayout.setHorizontalGroup(
@@ -199,12 +209,13 @@ public class AgendaGUi extends javax.swing.JFrame {
             .addGroup(buttonsPanelLayout.createSequentialGroup()
                 .addComponent(addButton)
                 .addGap(18, 18, 18)
-                .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(editButton, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(delButton))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonsPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(favButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(filterCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -221,9 +232,12 @@ public class AgendaGUi extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(filterCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(favButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        favButton.getAccessibleContext().setAccessibleName("Contacto Favorito");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -243,7 +257,7 @@ public class AgendaGUi extends javax.swing.JFrame {
                 .addComponent(searchPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -277,22 +291,9 @@ public class AgendaGUi extends javax.swing.JFrame {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
 
-        int index = contactosTabla.getSelectedRow();
-
-        String nombre = (String) tableModel.getValueAt(index, 1);
-        String telefono = (String) tableModel.getValueAt(index, 2);
-        String email = (String) tableModel.getValueAt(index, 3);
-        Contacto contacto = null;
-
-        for (Contacto contactFound : listaContactos) {
-            if (contactFound.getNombre().equals(nombre)) {
-                contacto = contactFound;
-            }
-        }
-
-        EditarGUI editarWindow = new EditarGUI(this, rootPaneCheckingEnabled,
-                nombre, telefono, email, tableModel, index, listaContactos, contacto);
-        editarWindow.setVisible(true);
+        DetalleGUI contactoWindow = new DetalleGUI(this, true,
+                contactoSeleccionado(), listaContactos, contactosTabla, tableModel);
+        contactoWindow.setVisible(true);
 
     }//GEN-LAST:event_editButtonActionPerformed
 
@@ -382,6 +383,28 @@ public class AgendaGUi extends javax.swing.JFrame {
 
     }//GEN-LAST:event_contactosTablaMouseClicked
 
+    private void favButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favButtonActionPerformed
+
+        int selectedRow = contactosTabla.getSelectedRow();
+        int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
+
+        Contacto contacto = contactoSeleccionado();
+        String name = contacto.getNombre();
+
+        // Modificar Lista de contactos y Tabla de contactos        
+        for (Contacto contactoFound : listaContactos) {
+            if (name.equals(contactoFound.getNombre()) && !contactoFound.isFav()) {
+
+                contactoFound.setFav(true);
+                tableModel.setValueAt("★", realSelectedRow, 0);
+            } else if (name.equals(contactoFound.getNombre()) && contactoFound.isFav()) {
+
+                contactoFound.setFav(false);
+                tableModel.setValueAt("", realSelectedRow, 0);
+            }
+        }
+    }//GEN-LAST:event_favButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
@@ -390,6 +413,7 @@ public class AgendaGUi extends javax.swing.JFrame {
     private javax.swing.JTable contactosTabla;
     private javax.swing.JButton delButton;
     private javax.swing.JButton editButton;
+    private javax.swing.JButton favButton;
     private javax.swing.JComboBox<String> filterCombo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
