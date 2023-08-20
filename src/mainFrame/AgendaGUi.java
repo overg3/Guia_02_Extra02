@@ -261,9 +261,7 @@ public class AgendaGUi extends javax.swing.JFrame {
     private void delButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delButtonActionPerformed
 
         int selectedRow = contactosTabla.getSelectedRow();
-
         int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
-
         String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 1);
 
         for (Contacto contacto : listaContactos) {
@@ -375,7 +373,9 @@ public class AgendaGUi extends javax.swing.JFrame {
             columna = contactosTabla.columnAtPoint(evt.getPoint());
 
             if (fila >= 0 && columna >= 0) {
-                DetalleGUI contactoWindow = new DetalleGUI(this, true, contactoSeleccionado());
+                DetalleGUI contactoWindow = new DetalleGUI(this, true,
+                        contactoSeleccionado(), listaContactos, contactosTabla,
+                        tableModel);
                 contactoWindow.setVisible(true);
             }
         }

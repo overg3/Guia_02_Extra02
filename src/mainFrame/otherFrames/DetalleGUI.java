@@ -1,14 +1,25 @@
 package mainFrame.otherFrames;
 
+import java.util.ArrayList;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import mainFrame.Contacto;
 
 public class DetalleGUI extends javax.swing.JDialog {
 
     private Contacto contacto;
+    private ArrayList<Contacto> listaContactos;
+    private JTable tablaContactos;
+    private DefaultTableModel tablaModel;
 
-    public DetalleGUI(java.awt.Frame parent, boolean modal, Contacto contacto) {
+    public DetalleGUI(java.awt.Frame parent, boolean modal, Contacto contacto,
+            ArrayList<Contacto> listaContactos, JTable tablaContactos,
+            DefaultTableModel tablaModel) {
         super(parent, modal);
         this.contacto = contacto;
+        this.listaContactos = listaContactos;
+        this.tablaContactos = tablaContactos;
+        this.tablaModel = tablaModel;
 
         initComponents();
 
@@ -43,8 +54,7 @@ public class DetalleGUI extends javax.swing.JDialog {
         } else {
             groupCombo.setSelectedIndex(0);
         }
-        
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -96,6 +106,11 @@ public class DetalleGUI extends javax.swing.JDialog {
 
         groupCombo.setBackground(new java.awt.Color(51, 255, 255));
         groupCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Todos", "Favorito" }));
+        groupCombo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                groupComboItemStateChanged(evt);
+            }
+        });
 
         jLabel9.setText("Grupo:");
 
@@ -243,6 +258,21 @@ public class DetalleGUI extends javax.swing.JDialog {
 
     }//GEN-LAST:event_closeButtonActionPerformed
 
+    private void groupComboItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_groupComboItemStateChanged
+
+        boolean favChoice;
+
+        if (groupCombo.getSelectedIndex() == 0) {
+            contacto.setFav(false);
+            favChoice = false;
+        } else {
+            contacto.setFav(true);
+            favChoice = true;
+        }
+        aplicarCambios(favChoice);
+
+    }//GEN-LAST:event_groupComboItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField adressField;
     private javax.swing.JButton closeButton;
@@ -263,4 +293,22 @@ public class DetalleGUI extends javax.swing.JDialog {
     private javax.swing.JTextField telField;
     private javax.swing.JTextField webField;
     // End of variables declaration//GEN-END:variables
+
+    private void aplicarCambios(boolean favChoice) {
+
+        int selectedRow = tablaContactos.getSelectedRow();
+        int realSelectedRow = tablaContactos.convertRowIndexToModel(selectedRow);
+
+        for (Contacto contactoFound : listaContactos) {
+            if (contactoFound.getNombre().equals(contacto.getNombre())) {
+                contactoFound.setFav(favChoice);
+            }
+        }
+        if (favChoice == true) {
+            tablaModel.setValueAt("★", realSelectedRow, 0);
+        } else {
+            tablaModel.setValueAt("", realSelectedRow, 0);
+        }
+    }
+
 }
