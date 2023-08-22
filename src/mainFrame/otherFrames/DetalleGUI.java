@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import mainFrame.AgendaGUi;
 import mainFrame.Contacto;
 
 public class DetalleGUI extends javax.swing.JDialog {
@@ -12,15 +13,17 @@ public class DetalleGUI extends javax.swing.JDialog {
     private ArrayList<Contacto> listaContactos;
     private JTable tablaContactos;
     private DefaultTableModel tablaModel;
+    private AgendaGUi root;
 
     public DetalleGUI(java.awt.Frame parent, boolean modal, Contacto contacto,
             ArrayList<Contacto> listaContactos, JTable tablaContactos,
-            DefaultTableModel tablaModel) {
+            DefaultTableModel tablaModel, AgendaGUi root) {
         super(parent, modal);
         this.contacto = contacto;
         this.listaContactos = listaContactos;
         this.tablaContactos = tablaContactos;
         this.tablaModel = tablaModel;
+        this.root = root;
 
         initComponents();
 
@@ -53,7 +56,7 @@ public class DetalleGUI extends javax.swing.JDialog {
         adressField.setText(contacto.getDireccion());
         webField.setText(contacto.getWeb());
         lastnField.setText(contacto.getApellido());
-        if (contacto.isFav()) {
+        if (contacto.isFav() == true) {
             groupCombo.setSelectedIndex(1);
             favLabel.setText("★");
         } else {
@@ -227,9 +230,9 @@ public class DetalleGUI extends javax.swing.JDialog {
         );
 
         editToggle.setText("Editar...");
-        editToggle.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                editToggleStateChanged(evt);
+        editToggle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editToggleActionPerformed(evt);
             }
         });
 
@@ -310,13 +313,6 @@ public class DetalleGUI extends javax.swing.JDialog {
 
     }//GEN-LAST:event_closeButtonActionPerformed
 
-    private void editToggleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_editToggleStateChanged
-
-        toggleEdicion();
-        nameField.requestFocus();
-
-    }//GEN-LAST:event_editToggleStateChanged
-
     private void applyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyButtonActionPerformed
 
         boolean favChoice;
@@ -338,10 +334,19 @@ public class DetalleGUI extends javax.swing.JDialog {
         }
 
         aplicarCambios(nombre, apellido, direccion, telefono, email, web, favChoice);
-
         editToggle.setSelected(false);
+        toggleEdicion();
+        
+        root.refrescarRenderDeTabla();
 
     }//GEN-LAST:event_applyButtonActionPerformed
+
+    private void editToggleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editToggleActionPerformed
+
+        toggleEdicion();
+        nameField.requestFocus();
+
+    }//GEN-LAST:event_editToggleActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField adressField;
@@ -396,7 +401,7 @@ public class DetalleGUI extends javax.swing.JDialog {
         tablaModel.setValueAt(nombre, realSelectedRow, 1);
         tablaModel.setValueAt(telefono, realSelectedRow, 2);
         tablaModel.setValueAt(email, realSelectedRow, 3);
-
+        
     }
 
     private void toggleEdicion() {

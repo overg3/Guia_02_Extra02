@@ -1,13 +1,16 @@
 package mainFrame;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import mainFrame.otherFrames.AgregarGUI;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import mainFrame.otherFrames.AdvSearchGUI;
@@ -267,7 +270,7 @@ public class AgendaGUi extends javax.swing.JFrame {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
 
         AgregarGUI agregarWindow = new AgregarGUI(this, rootPaneCheckingEnabled,
-                listaContactos, tableModel);
+                listaContactos, tableModel, this);
         agregarWindow.setVisible(true);
 
     }//GEN-LAST:event_addButtonActionPerformed
@@ -291,8 +294,8 @@ public class AgendaGUi extends javax.swing.JFrame {
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
 
-        DetalleGUI contactoWindow = new DetalleGUI(this, true,
-                contactoSeleccionado(), listaContactos, contactosTabla, tableModel);
+        DetalleGUI contactoWindow = new DetalleGUI(this, true, contactoSeleccionado(),
+                listaContactos, contactosTabla, tableModel, this);
         contactoWindow.setVisible(true);
 
     }//GEN-LAST:event_editButtonActionPerformed
@@ -376,7 +379,7 @@ public class AgendaGUi extends javax.swing.JFrame {
             if (fila >= 0 && columna >= 0) {
                 DetalleGUI contactoWindow = new DetalleGUI(this, true,
                         contactoSeleccionado(), listaContactos, contactosTabla,
-                        tableModel);
+                        tableModel, this);
                 contactoWindow.setVisible(true);
             }
         }
@@ -403,6 +406,9 @@ public class AgendaGUi extends javax.swing.JFrame {
                 tableModel.setValueAt("", realSelectedRow, 0);
             }
         }
+
+        refrescarRenderDeTabla();
+
     }//GEN-LAST:event_favButtonActionPerformed
 
 
@@ -538,6 +544,39 @@ public class AgendaGUi extends javax.swing.JFrame {
             }
         }
         return null;
+    }
+
+    public void refrescarRenderDeTabla() {
+
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+
+                row = contactosTabla.convertRowIndexToModel(row);
+
+                Component component = super.getTableCellRendererComponent(
+                        contactosTabla, value, isSelected, hasFocus, row, column);
+
+                String favString = (String) contactosTabla.getModel().getValueAt(row, 0);
+
+                if (!isSelected) {
+                    if (favString.equals("★")) {
+                        component.setBackground(new Color(187, 255, 189));
+                    } else {
+                        component.setBackground(contactosTabla.getBackground());
+                    }
+                } else {
+                    component.setBackground(contactosTabla.getSelectionBackground());
+                }
+
+                return component;
+            }
+
+        };
+
+        contactosTabla.setDefaultRenderer(Object.class, renderer); // Object.class se utiliza para indicar que el renderizador se aplicará a todas las celdas sin importar el tipo de datos que contengan
+
     }
 
 }

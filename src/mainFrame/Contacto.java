@@ -17,6 +17,15 @@ public class Contacto {
         this.fav = false;
     }
 
+    public Contacto(String nombre, String apellido, String tel, String email, String direccion, String web) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.tel = tel;
+        this.email = email;
+        this.direccion = direccion;
+        this.web = web;
+    }
+
     public String getNombre() {
         return nombre;
     }

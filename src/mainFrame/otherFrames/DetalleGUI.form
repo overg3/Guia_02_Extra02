@@ -318,7 +318,7 @@
             <Property name="text" type="java.lang.String" value="Editar..."/>
           </Properties>
           <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="editToggleStateChanged"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="editToggleActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="favLabel">
