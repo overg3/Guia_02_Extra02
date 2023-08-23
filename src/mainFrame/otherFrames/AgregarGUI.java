@@ -348,7 +348,7 @@ public class AgregarGUI extends javax.swing.JDialog {
 
         if (!nombreField.getText().trim().isEmpty()) {
 
-            if (expandedPanel.isVisible()) {
+            if (expandedPanel.isVisible() == true) {
                 newContact = new Contacto(contactName, contactApellido,
                         contactTel, contactEmail, contactAddress, contactWeb);
             } else {
@@ -358,10 +358,10 @@ public class AgregarGUI extends javax.swing.JDialog {
             newContact.setFav(favValue);
             listaContactos.add(newContact);
             if (favValue == true) {
-                tableModel.addRow(new Object[]{"★", newContact.getNombre(),
+                tableModel.addRow(new Object[]{"★", newContact,
                     newContact.getTel(), newContact.getEmail()});
             } else {
-                tableModel.addRow(new Object[]{"", newContact.getNombre(),
+                tableModel.addRow(new Object[]{"", newContact,
                     newContact.getTel(), newContact.getEmail()});
             }
             dispose();

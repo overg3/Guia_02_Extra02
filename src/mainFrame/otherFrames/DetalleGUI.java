@@ -336,7 +336,7 @@ public class DetalleGUI extends javax.swing.JDialog {
         aplicarCambios(nombre, apellido, direccion, telefono, email, web, favChoice);
         editToggle.setSelected(false);
         toggleEdicion();
-        
+
         root.refrescarRenderDeTabla();
 
     }//GEN-LAST:event_applyButtonActionPerformed
@@ -376,11 +376,12 @@ public class DetalleGUI extends javax.swing.JDialog {
             String telefono, String email, String web, boolean favChoice) {
 
         int selectedRow = tablaContactos.getSelectedRow();
-        int realSelectedRow = tablaContactos.convertRowIndexToModel(selectedRow);
+        selectedRow = tablaContactos.convertRowIndexToModel(selectedRow);
+        Contacto modContacto = null;
 
         // Modificar Lista de contactos
         for (Contacto contactoFound : listaContactos) {
-            if (contactoFound.getNombre().equals(contacto.getNombre())) {
+            if (contactoFound.equals(contacto)) {
 
                 contactoFound.setNombre(nombre);
                 contactoFound.setApellido(apellido);
@@ -389,19 +390,20 @@ public class DetalleGUI extends javax.swing.JDialog {
                 contactoFound.setEmail(email);
                 contactoFound.setWeb(web);
                 contactoFound.setFav(favChoice);
+                modContacto = contactoFound;
             }
         }
 
         // Modificar Tabla de contactos
         if (favChoice == true) {
-            tablaModel.setValueAt("★", realSelectedRow, 0);
+            tablaModel.setValueAt("★", selectedRow, 0);
         } else {
-            tablaModel.setValueAt("", realSelectedRow, 0);
+            tablaModel.setValueAt("", selectedRow, 0);
         }
-        tablaModel.setValueAt(nombre, realSelectedRow, 1);
-        tablaModel.setValueAt(telefono, realSelectedRow, 2);
-        tablaModel.setValueAt(email, realSelectedRow, 3);
-        
+        tablaModel.setValueAt(modContacto, selectedRow, 1);
+        tablaModel.setValueAt(modContacto.getTel(), selectedRow, 2);
+        tablaModel.setValueAt(modContacto.getEmail(), selectedRow, 3);
+
     }
 
     private void toggleEdicion() {

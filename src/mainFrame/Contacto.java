@@ -82,4 +82,11 @@ public class Contacto {
         this.fav = fav;
     }
 
+    @Override
+    public String toString() {
+        return getNombre();
+    }
+    
+    
+
 }

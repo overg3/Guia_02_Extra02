@@ -5,7 +5,9 @@ import java.awt.Component;
 import java.awt.Font;
 import mainFrame.otherFrames.AgregarGUI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -277,18 +279,29 @@ public class AgendaGUi extends javax.swing.JFrame {
 
     private void delButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delButtonActionPerformed
 
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Esta seguro?", 
+                " Eliminar Contacto", JOptionPane.OK_CANCEL_OPTION);
+        
+        if (respuesta == JOptionPane.CANCEL_OPTION) {
+            return;
+        }
+        
         int selectedRow = contactosTabla.getSelectedRow();
-        int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
-        String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 1);
+        selectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
+        Contacto selectedContact = (Contacto) tableModel.getValueAt(selectedRow, 1);
 
-        for (Contacto contacto : listaContactos) {
-            if (contacto.getNombre().equals(selectedContact)) {
-                listaContactos.remove(contacto);
-                break;
+        Iterator<Contacto> iterator = listaContactos.iterator();
+
+        while (iterator.hasNext()) {
+            Contacto contacto = iterator.next();
+            if (contacto.equals(selectedContact)) {
+                
+                iterator.remove();
             }
+
         }
 
-        tableModel.removeRow(realSelectedRow);
+        tableModel.removeRow(selectedRow);
 
     }//GEN-LAST:event_delButtonActionPerformed
 
@@ -308,15 +321,15 @@ public class AgendaGUi extends javax.swing.JFrame {
 
         for (Contacto contacto : listaContactos) {
             if (contacto.getNombre().toLowerCase().startsWith(searchText)
-                    && !contacto.isFav()) {
+                    && contacto.isFav() == false) {
                 tableModel.addRow(new Object[]{
-                    "", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                    "", contacto, contacto.getTel(), contacto.getEmail()
                 });
 
             } else if (contacto.getNombre().toLowerCase().startsWith(searchText)
-                    && contacto.isFav()) {
+                    && contacto.isFav() == true) {
                 tableModel.addRow(new Object[]{
-                    "★", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                    "★", contacto, contacto.getTel(), contacto.getEmail()
                 });
             }
 
@@ -389,7 +402,7 @@ public class AgendaGUi extends javax.swing.JFrame {
     private void favButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_favButtonActionPerformed
 
         int selectedRow = contactosTabla.getSelectedRow();
-        int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
+        selectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
 
         Contacto contacto = contactoSeleccionado();
         String name = contacto.getNombre();
@@ -399,11 +412,11 @@ public class AgendaGUi extends javax.swing.JFrame {
             if (name.equals(contactoFound.getNombre()) && !contactoFound.isFav()) {
 
                 contactoFound.setFav(true);
-                tableModel.setValueAt("★", realSelectedRow, 0);
+                tableModel.setValueAt("★", selectedRow, 0);
             } else if (name.equals(contactoFound.getNombre()) && contactoFound.isFav()) {
 
                 contactoFound.setFav(false);
-                tableModel.setValueAt("", realSelectedRow, 0);
+                tableModel.setValueAt("", selectedRow, 0);
             }
         }
 
@@ -444,7 +457,7 @@ public class AgendaGUi extends javax.swing.JFrame {
                 "arcangel@gmail.com"));
 
         for (Contacto contacto : listaContactos) {
-            Object[] contactos = {"", contacto.getNombre(),
+            Object[] contactos = {"", contacto,
                 contacto.getTel(), contacto.getEmail()};
             tableModel.addRow(contactos);
         }
@@ -481,12 +494,12 @@ public class AgendaGUi extends javax.swing.JFrame {
 
                 if (contacto.isFav()) {
                     tableModel.addRow(new Object[]{
-                        "★", contacto.getNombre(), contacto.getTel(),
+                        "★", contacto, contacto.getTel(),
                         contacto.getEmail()
                     });
                 } else {
                     tableModel.addRow(new Object[]{
-                        "", contacto.getNombre(), contacto.getTel(),
+                        "", contacto, contacto.getTel(),
                         contacto.getEmail()
                     });
                 }
@@ -495,7 +508,7 @@ public class AgendaGUi extends javax.swing.JFrame {
                     && emailContacto.startsWith(mail) && contacto.isFav() == true
                     && onlyFavs == true) {
                 tableModel.addRow(new Object[]{
-                    "★", contacto.getNombre(), contacto.getTel(),
+                    "★", contacto, contacto.getTel(),
                     contacto.getEmail()
                 });
             }
@@ -508,11 +521,11 @@ public class AgendaGUi extends javax.swing.JFrame {
         for (Contacto contacto : listaContactos) {
             if (contacto.isFav()) {
                 tableModel.addRow(new Object[]{
-                    "★", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                    "★", contacto, contacto.getTel(), contacto.getEmail()
                 });
             } else {
                 tableModel.addRow(new Object[]{
-                    "", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                    "", contacto, contacto.getTel(), contacto.getEmail()
                 });
             }
 
@@ -525,7 +538,7 @@ public class AgendaGUi extends javax.swing.JFrame {
         for (Contacto contacto : listaContactos) {
             if (contacto.isFav()) {
                 tableModel.addRow(new Object[]{
-                    "★", contacto.getNombre(), contacto.getTel(), contacto.getEmail()
+                    "★", contacto, contacto.getTel(), contacto.getEmail()
                 });
             }
         }
@@ -534,12 +547,12 @@ public class AgendaGUi extends javax.swing.JFrame {
     private Contacto contactoSeleccionado() {
 
         int selectedRow = contactosTabla.getSelectedRow();
-        int realSelectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
+        selectedRow = contactosTabla.convertRowIndexToModel(selectedRow);
 
-        String selectedContact = (String) tableModel.getValueAt(realSelectedRow, 1);
+        Contacto selectedContact = (Contacto) tableModel.getValueAt(selectedRow, 1);
 
         for (Contacto contacto : listaContactos) {
-            if (contacto.getNombre().equals(selectedContact)) {
+            if (contacto.equals(selectedContact)) {
                 return contacto;
             }
         }
